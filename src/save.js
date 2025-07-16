@@ -1,7 +1,18 @@
 import encodeWebm from './webm.js'
 import encodeGif from './gif.js'
+import { captureState } from './svgcap.js'
 
 const createDownloadURL = blob => URL.createObjectURL(blob)
+
+const capturePNG = async (svg, progress) => {
+  progress(1)
+  const canvas = await captureState(svg, Math.random()) // 0.5 = ambil di pertengahan animasi
+  return new Promise(resolve => {
+    canvas.toBlob(blob => {
+      resolve(blob)
+    }, 'image/png')
+  })
+}
 
 const triggerDownload = (url, ext) => {
   const a = document.createElement('a')
@@ -21,7 +32,7 @@ const createProgressStrategy = (btn) => ({
     const update = progress => {
       btn.textContent = formatters.percentage(progress)
     }
-    return { update, cleanup: () => {} }
+    return { update, cleanup: () => { } }
   },
   timer: () => {
     let time = 0
@@ -30,7 +41,7 @@ const createProgressStrategy = (btn) => ({
       btn.textContent = formatters.timer(time)
     }, 100)
     return {
-      update: () => {}, // No-op for timer strategy
+      update: () => { }, // No-op for timer strategy
       cleanup: () => clearInterval(intervalId)
     }
   }
@@ -39,9 +50,9 @@ const createProgressStrategy = (btn) => ({
 const withLoadingState = async (btn, action, progressType = 'percentage') => {
   const origText = btn.textContent
   btn.disabled = true
-  
+
   const strategy = createProgressStrategy(btn)[progressType]()
-  
+
   try {
     return await action(strategy.update)
   } catch (err) {
@@ -72,6 +83,7 @@ const createDownloader = (captureFunc, ext, progressType = 'percentage') => asyn
 
 export const downloader = {
   svg: createDownloader(captureSVG, 'svg'),
+  png: createDownloader(capturePNG, 'png'),
   webm: createDownloader(encodeWebm, 'webm'),
   gif: createDownloader(encodeGif, 'gif', 'timer')
 }

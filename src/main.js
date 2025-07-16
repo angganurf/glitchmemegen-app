@@ -17,7 +17,7 @@ const updateValue = (e) => {
   if (span) span.textContent = e.target.value
 }
 
-const getText = () => $('textInput').value || 'ḠĿ𐪌𐌕ꛕ𖩘꠵ⵤ'
+const getText = () => $('textInput').value || 'ḠĿ𐪌𐌕ꛕⵤM꠵'
 const getParams = () => ({
   speed: parse($('speed').value),
   intensity: parse($('intensity').value),
@@ -100,8 +100,8 @@ const setupDownloaders = (ext) => {
   btn.onclick = () => downloader[ext](query('#preview svg'), btn)
 }
 
-;['webm', 'svg', 'gif'].forEach(setupDownloaders)
+  ;['webm', 'svg', 'png', 'gif'].forEach(setupDownloaders)
 
-$('version').textContent = `v${import.meta.env.VERSION}`
+$('version').textContent = `v1.1.0`
 
 updatePreview()
