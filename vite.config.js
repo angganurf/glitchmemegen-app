@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import pkg from './package.json'
 
 export default defineConfig({
-  base: '/glitcher-app/',
+  base: '/glitchmemegen-app/',
   build: {
     outDir: 'dist',
     target: 'esnext',
